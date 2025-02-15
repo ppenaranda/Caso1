@@ -15,27 +15,33 @@ public class Productor extends Thread {
 	}
 	
 	@Override
-	public void run() {
-		boolean t = true;
-		while(t)
-			if(buzonProcesamiento.getSize() != 0) {
-				Producto p = buzonProcesamiento.retirar();
-				p.setEstado("Procesamiento");
-				p.printEstado();
-				if (p.getEstado() != "FIN" ) {
-					buzonRevision.almacenar(p);
-					p.setEstado("Revisión");
-					p.printEstado();
-				}
-				else {
-					t = false;
-				}	
-			}
-			else {
-				Producto prod = new Producto();
-				buzonRevision.almacenar(prod);
-				prod.setEstado("Revisión");
-				prod.printEstado();
-			}		
-		}
+    public void run() {
+        while (true) {
+            Producto producto = null;
+            
+            // Primero intentar reprocesar
+            synchronized(buzonProcesamiento) {
+                if (buzonProcesamiento.getSize() > 0) {
+                    producto = buzonProcesamiento.retirar();
+                    if (producto.getEstado().equals("FIN")) {
+                        break; // Terminar si recibimos señal de fin 
+                    }
+                }
+            }
+            
+            // Si no hay productos para reprocesar, crear uno nuevo
+            if (producto == null) {
+                producto = new Producto();
+            }
+            //System.out.print(" Id Productor: "+ id + " ");
+            producto.setEstado("Procesamiento");
+            producto.printEstado();
+            
+            // Almacenar en buzón de revisión
+            buzonRevision.almacenar(producto);
+            producto.setEstado("Revisión");
+            //System.out.print(" Id Productor: "+ id + " ");
+            producto.printEstado();
+        }
+    }
 }

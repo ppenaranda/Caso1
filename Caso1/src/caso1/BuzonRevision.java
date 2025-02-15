@@ -13,22 +13,31 @@ public class BuzonRevision {
 	}
 	
 	public synchronized void almacenar (Producto i) {
-		while (buff.size() == nMax)
+
+		while (buff.size() >= nMax) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
+		}
 		buff.add(i);
-		notify();
+		
 	}
 	
-	public synchronized Producto retirar() {
-		while (buff.size() == 0) {
-			Thread.yield();
-		}
-		return buff.remove();
-	}
+    public Producto retirar() {
+        while (buff.isEmpty()) {
+            Thread.yield(); // Consulta semi-activa como especifica el enunciado
+        }
+        synchronized(buff) {
+        Producto p = buff.remove();
+        buff.notifyAll();
+        return p;
+        }
+    }
+    
+    public synchronized int getSize() {
+        return buff.size();
+    }
 }

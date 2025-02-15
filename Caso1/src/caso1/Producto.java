@@ -14,9 +14,6 @@ public class Producto {
 		return estado;
 	}
 	
-	public void finEstado() {
-		this.estado = "FIN";
-	}
 	
 	public int getId() {
 		return id;
