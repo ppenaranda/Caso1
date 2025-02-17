@@ -1,29 +1,31 @@
 package caso1;
 
 public class Producto {
-	private int id;
+	private Integer id = 0;
 	private String estado = "ok";
 	private static int nId = 0;
-	
+
 	public Producto() {
-		this.id = nId;
-		nId++;
+		synchronized (Producto.class) {
+			this.id = nId;
+			nId++;
+		}
 	}
-	
+
 	public String getEstado() {
 		return estado;
 	}
-	
-	
+
 	public int getId() {
 		return id;
 	}
-	
+
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
-	
-	public void printEstado() {
-		System.out.println("El producto id: "+ id + " se encuentra en estado de: "+ estado);
+
+	public void printEstado(int fuente) {
+		System.out.println(
+				"El operario con id: " + fuente + " ha cambiado el estado del producto id: " + id + " a: " + estado);
 	}
 }

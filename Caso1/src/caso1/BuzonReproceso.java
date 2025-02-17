@@ -1,5 +1,4 @@
 package caso1;
-
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -10,8 +9,9 @@ public class BuzonReproceso {
 		this.buff = new LinkedList<Producto>();
 	}
 	
-	public  synchronized void almacenar(Producto i) {
+	public synchronized void almacenar(Producto i) {
 		buff.add(i);
+        notifyAll();
 	}
 	
 	public synchronized Producto retirar() {
